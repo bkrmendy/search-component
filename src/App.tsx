@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlexColumn, FlexRow } from "./Components";
+import { CardBackground, FlexColumn, FlexRow } from "./Components";
 import { InputField } from "./InputField";
 import { tokenizeInput, userInfoMatchesSearchTerm } from "./SearchUtils";
 import { SuggestionCard } from "./SuggestionCard";
@@ -7,6 +7,7 @@ import { SuggestionState } from "./SuggestionState";
 import { UserCard } from "./UserCard";
 import { UserInfo, USERS } from "./UserInfo";
 import { noop } from "./Utils";
+import { usePopper } from "react-popper";
 
 import autoAnimate from "@formkit/auto-animate";
 
@@ -22,8 +23,20 @@ function App() {
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
   const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "active", suggestions: [] });
 
-  const autoAnimateRef = React.useRef(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const popperRef = React.useRef<HTMLInputElement>(null);
+
+  const { styles, attributes } = usePopper(inputRef.current, popperRef.current, {
+    strategy: "absolute",
+    placement: "bottom-end",
+    modifiers: [
+      // {name: "eventListeners", options: {resize: true, scroll: true}} // enabled by default
+      { name: "offset", options: { offset: [0, 6] } },
+      { name: "preventOverflow", options: { rootBoundary: "viewport", padding: 10 } },
+    ],
+  });
+
+  const autoAnimateRef = React.useRef(null);
 
   const removeInvitedUser = (userId: string) => setInvitedUsers(invitedUsers.filter(user => user.id !== userId));
 
@@ -116,7 +129,14 @@ function App() {
           ))}
         </div>
       </FlexColumn>
-      <FlexColumn>
+      <CardBackground
+        borderColor="rgb(240, 242, 246)"
+        bgColor="white"
+        hoverColor="transparent"
+        ref={popperRef}
+        style={styles.popper}
+        {...attributes.popper}
+      >
         {suggestionState.type === "active"
           ? suggestionState.suggestions.map(user => (
               <SuggestionCard
@@ -128,7 +148,7 @@ function App() {
               />
             ))
           : null}
-      </FlexColumn>
+      </CardBackground>
     </FlexRow>
   );
 }
