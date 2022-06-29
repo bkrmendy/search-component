@@ -85,7 +85,7 @@ export const Button = styled(Clickable)<{ width: number; xxColor: string; hoverC
 export const RelativeContainer = styled.div`
   position: relative;
   width: 320px;
-  height: 32px;
+  height: 52px;
 `;
 
 export const InputFieldPlaceholder = styled.div<{ xxColor: string }>`
