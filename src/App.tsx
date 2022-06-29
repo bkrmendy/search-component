@@ -7,9 +7,9 @@ import { SuggestionState } from "./SuggestionState";
 import { UserCard } from "./UserCard";
 import { UserInfo, USERS } from "./UserInfo";
 import { noop } from "./Utils";
-import { usePopper } from "react-popper";
 
 import autoAnimate from "@formkit/auto-animate";
+import { Popup } from "./Popup";
 
 function addInvitedUserI(users: UserInfo[], user: UserInfo): UserInfo[] {
   if (users.some(u => u.id === user.id)) {
@@ -24,17 +24,6 @@ function App() {
   const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "active", suggestions: [] });
 
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const popperRef = React.useRef<HTMLInputElement>(null);
-
-  const { styles, attributes } = usePopper(inputRef.current, popperRef.current, {
-    strategy: "absolute",
-    placement: "bottom-end",
-    modifiers: [
-      // {name: "eventListeners", options: {resize: true, scroll: true}} // enabled by default
-      { name: "offset", options: { offset: [0, 6] } },
-      { name: "preventOverflow", options: { rootBoundary: "viewport", padding: 10 } },
-    ],
-  });
 
   const autoAnimateRef = React.useRef(null);
 
@@ -129,26 +118,21 @@ function App() {
           ))}
         </div>
       </FlexColumn>
-      <CardBackground
-        borderColor="rgb(240, 242, 246)"
-        bgColor="white"
-        hoverColor="transparent"
-        ref={popperRef}
-        style={styles.popper}
-        {...attributes.popper}
-      >
-        {suggestionState.type === "active"
-          ? suggestionState.suggestions.map(user => (
-              <SuggestionCard
-                key={user.id}
-                name={user.name}
-                email={user.email}
-                avatar={user.avatar}
-                onClick={() => addInvitedUser(user)}
-              />
-            ))
-          : null}
-      </CardBackground>
+      <Popup isShown={suggestionState.type === "active"} anchorRef={inputRef} onClickOutside={dismissSuggestions}>
+        <CardBackground borderColor="rgb(240, 242, 246)" bgColor="white" hoverColor="transparent">
+          {suggestionState.type === "active"
+            ? suggestionState.suggestions.map(user => (
+                <SuggestionCard
+                  key={user.id}
+                  name={user.name}
+                  email={user.email}
+                  avatar={user.avatar}
+                  onClick={() => addInvitedUser(user)}
+                />
+              ))
+            : null}
+        </CardBackground>
+      </Popup>
     </FlexRow>
   );
 }

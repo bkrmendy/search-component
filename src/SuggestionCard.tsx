@@ -10,10 +10,21 @@ interface SuggestionCardProps {
 }
 
 export const SuggestionCard = (props: SuggestionCardProps) => {
+  const { onClick } = props;
+
+  const onClickI = React.useCallback(
+    (e: React.SyntheticEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    },
+    [onClick]
+  );
+
   return (
-    <Clickable>
+    <Clickable onClick={onClickI}>
       <CardBackground borderColor="transparent" bgColor="transparent" hoverColor="rgb(241, 242, 246)">
-        <FlexRow onClick={props.onClick} alignItems="center">
+        <FlexRow alignItems="center">
           <AvatarImg src={props.avatar} />
           <HorizontalSpacer w={4} />
           <FlexColumn>
