@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlexColumn, FlexRow, Title } from "./Components";
+import { FlexColumn, FlexRow } from "./Components";
 import { InputField } from "./InputField";
 import { tokenizeInput, userInfoMatchesSearchTerm } from "./SearchUtils";
 import { SuggestionCard } from "./SuggestionCard";
@@ -67,9 +67,14 @@ function App() {
 
   const escListener = React.useCallback(
     (e: KeyboardEvent) => {
-      if (e.code !== "Escape" || suggestionState.type === "inactive") {
+      if (e.code !== "Escape") {
         return;
       }
+
+      if (suggestionState.type === "inactive") {
+        inputRef.current?.blur();
+      }
+
       e.preventDefault();
       dismissSuggestions();
     },
@@ -98,20 +103,6 @@ function App() {
           onBlur={noop}
           onFocus={activateSuggestions}
         />
-        {suggestionState.type === "active"
-          ? suggestionState.suggestions.map(user => (
-              <SuggestionCard
-                key={user.id}
-                name={user.name}
-                email={user.email}
-                avatar={user.avatar}
-                onClick={() => addInvitedUser(user)}
-              />
-            ))
-          : null}
-      </FlexColumn>
-      <FlexColumn>
-        <Title>Invitees</Title>
         <div ref={autoAnimateRef}>
           {invitedUsers.map(user => (
             <UserCard
@@ -124,6 +115,19 @@ function App() {
             />
           ))}
         </div>
+      </FlexColumn>
+      <FlexColumn>
+        {suggestionState.type === "active"
+          ? suggestionState.suggestions.map(user => (
+              <SuggestionCard
+                key={user.id}
+                name={user.name}
+                email={user.email}
+                avatar={user.avatar}
+                onClick={() => addInvitedUser(user)}
+              />
+            ))
+          : null}
       </FlexColumn>
     </FlexRow>
   );

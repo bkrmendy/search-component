@@ -82,6 +82,43 @@ export const Button = styled(Clickable)<{ width: number; xxColor: string; hoverC
   }
 `;
 
+export const RelativeContainer = styled.div`
+  position: relative;
+  width: 320px;
+  height: 32px;
+`;
+
+export const InputFieldPlaceholder = styled.div<{ xxColor: string }>`
+  position: absolute;
+  user-select: none;
+  font-size: 27px;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: ${props => props.xxColor};
+
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+`;
+
+export const InputFieldComp = styled.input`
+  position: absolute;
+  outline: none;
+  resize: none;
+  border: none;
+  background-color: transparent;
+
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  font-size: 27px;
+  font-family: sans-serif;
+  font-weight: 600;
+`;
+
 export const CloseIcon = () => {
   return (
     <svg viewBox="0 0 28 28">

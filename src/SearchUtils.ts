@@ -26,6 +26,8 @@ export function userInfoMatchesSearchTerm(searchTerm: string, userName: string) 
         return false;
     }
 
+    searchTerm = searchTerm.toLowerCase();
+
     const nameParts = userName
         .split(" ")
         .map(part => part.trim().toLowerCase());
