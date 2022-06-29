@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlexRow } from "./Components";
+import { FlexColumn, FlexRow, Title } from "./Components";
 import { InputField } from "./InputField";
 import { tokenizeInput, userInfoMatchesSearchTerm } from "./SearchUtils";
 import { SuggestionCard } from "./SuggestionCard";
@@ -8,34 +8,58 @@ import { UserCard } from "./UserCard";
 import { UserInfo, USERS } from "./UserInfo";
 import { noop } from "./Utils";
 
+import autoAnimate from "@formkit/auto-animate";
+
+function addInvitedUserI(users: UserInfo[], user: UserInfo): UserInfo[] {
+  if (users.some(u => u.id === user.id)) {
+    return users;
+  }
+  return [...users, user];
+}
+
 function App() {
   const [inputValue, setInputValue] = React.useState<string>("");
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
-  const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "inactive" });
+  const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "active", suggestions: [] });
 
+  const autoAnimateRef = React.useRef(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const removeInvitedUser = (userId: string) => setInvitedUsers(invitedUsers.filter(user => user.id !== userId));
 
-  const addInvitedUser = (userInfo: UserInfo) => setInvitedUsers([...invitedUsers, userInfo]);
+  const addInvitedUser = (userInfo: UserInfo) => setInvitedUsers(addInvitedUserI(invitedUsers, userInfo));
 
-  React.useEffect(() => {
-    if (suggestionState.type === "inactive") {
-      return;
-    }
+  const onSearchTermChanged = React.useCallback(
+    (searchTerm: string) => {
+      console.log(searchTerm);
+      setInputValue(searchTerm);
 
-    const lastSearchTerm = tokenizeInput(inputValue).pop();
-    if (lastSearchTerm == null) {
-      return;
-    }
+      if (suggestionState.type === "inactive") {
+        return;
+      }
 
-    setTimeout(() => {
+      if (searchTerm.length === 0) {
+        setSuggestionState({ type: "inactive" });
+      }
+
+      const lastSearchTerm = tokenizeInput(searchTerm).pop();
+
+      if (lastSearchTerm == null) {
+        setSuggestionState({ type: "active", suggestions: [] });
+        return;
+      }
+
       setSuggestionState({
         type: "active",
         suggestions: USERS.filter(user => userInfoMatchesSearchTerm(lastSearchTerm, user.name)),
       });
-    }, 0);
-  }, [inputValue, suggestionState, setSuggestionState]);
+    },
+    [suggestionState.type]
+  );
+
+  React.useEffect(() => {
+    autoAnimateRef.current && autoAnimate(autoAnimateRef.current, { duration: 100 });
+  }, [autoAnimateRef]);
 
   const dismissSuggestions = React.useCallback(() => {
     setSuggestionState({ type: "inactive" });
@@ -43,13 +67,13 @@ function App() {
 
   const escListener = React.useCallback(
     (e: KeyboardEvent) => {
-      if (e.code !== "Escape") {
+      if (e.code !== "Escape" || suggestionState.type === "inactive") {
         return;
       }
       e.preventDefault();
       dismissSuggestions();
     },
-    [dismissSuggestions]
+    [dismissSuggestions, suggestionState.type]
   );
 
   React.useEffect(() => {
@@ -59,20 +83,21 @@ function App() {
 
   const activateSuggestions = React.useCallback(() => {
     console.log("activate");
-    setTimeout(() => setSuggestionState({ type: "active", suggestions: [] }), 0);
-  }, [setSuggestionState]);
+    if (suggestionState.type === "inactive") {
+      setSuggestionState({ type: "active", suggestions: [] });
+    }
+  }, [setSuggestionState, suggestionState.type]);
 
   return (
     <FlexRow>
-      <InputField
-        forwardRef={inputRef}
-        value={inputValue}
-        onChange={setInputValue}
-        onBlur={dismissSuggestions}
-        onFocus={activateSuggestions}
-      />
-      <div>
-        <h2>Suggestions</h2>
+      <FlexColumn>
+        <InputField
+          forwardRef={inputRef}
+          value={inputValue}
+          onChange={onSearchTermChanged}
+          onBlur={noop}
+          onFocus={activateSuggestions}
+        />
         {suggestionState.type === "active"
           ? suggestionState.suggestions.map(user => (
               <SuggestionCard
@@ -84,20 +109,22 @@ function App() {
               />
             ))
           : null}
-      </div>
-      <div>
-        <h2>Invitees</h2>
-        {invitedUsers.map(user => (
-          <UserCard
-            key={user.id}
-            name={user.name}
-            avatar={user.avatar}
-            email={user.email}
-            onRemove={() => removeInvitedUser(user.id)}
-            onClick={noop}
-          />
-        ))}
-      </div>
+      </FlexColumn>
+      <FlexColumn>
+        <Title>Invitees</Title>
+        <div ref={autoAnimateRef}>
+          {invitedUsers.map(user => (
+            <UserCard
+              key={user.id}
+              name={user.name}
+              avatar={user.avatar}
+              email={user.email}
+              onRemove={() => removeInvitedUser(user.id)}
+              onClick={noop}
+            />
+          ))}
+        </div>
+      </FlexColumn>
     </FlexRow>
   );
 }
