@@ -1,0 +1,12 @@
+body {
+  margin: 0px;
+  background-color: rgb(247, 247, 250);
+
+  font-family: -apple-system, Helvetica Neue, Lucida Grande, sans-serif;
+  letter-spacing: -0.02em;
+  caret-color: #7161ec;
+}
+
+svg {
+  display: block;
+}

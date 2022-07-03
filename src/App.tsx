@@ -1,15 +1,14 @@
-import React from 'react';
-import { CardBackground, FlexColumn, FlexRow } from "./Components";
+import React from "react";
+import { CalendarLabel, FlexColumn, FlexRow, HorizontalSpacer, Padding, RightSidebar } from "./Components";
 import { InputField } from "./InputField";
 import { tokenizeInput, userInfoMatchesSearchTerm } from "./SearchUtils";
-import { SuggestionCard } from "./SuggestionCard";
 import { SuggestionState } from "./SuggestionState";
 import { UserCard } from "./UserCard";
 import { UserInfo, USERS } from "./UserInfo";
 import { noop } from "./Utils";
 
 import autoAnimate from "@formkit/auto-animate";
-import { Popup } from "./Popup";
+import { SuggestionPopup } from "./SuggestionPopup";
 
 function addInvitedUserI(users: UserInfo[], user: UserInfo): UserInfo[] {
   if (users.some(u => u.id === user.id)) {
@@ -23,9 +22,8 @@ function App() {
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
   const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "active", suggestions: [] });
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
   const autoAnimateRef = React.useRef(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const removeInvitedUser = (userId: string) => setInvitedUsers(invitedUsers.filter(user => user.id !== userId));
 
@@ -33,7 +31,6 @@ function App() {
 
   const onSearchTermChanged = React.useCallback(
     (searchTerm: string) => {
-      console.log(searchTerm);
       setInputValue(searchTerm);
 
       if (suggestionState.type === "inactive") {
@@ -67,73 +64,50 @@ function App() {
     setSuggestionState({ type: "inactive" });
   }, [setSuggestionState]);
 
-  const escListener = React.useCallback(
-    (e: KeyboardEvent) => {
-      if (e.code !== "Escape") {
-        return;
-      }
-
-      if (suggestionState.type === "inactive") {
-        inputRef.current?.blur();
-      }
-
-      e.preventDefault();
-      dismissSuggestions();
-    },
-    [dismissSuggestions, suggestionState.type]
-  );
-
-  React.useEffect(() => {
-    window.addEventListener("keydown", escListener);
-    return () => window.removeEventListener("keydown", escListener);
-  });
-
   const activateSuggestions = React.useCallback(() => {
-    console.log("activate");
     if (suggestionState.type === "inactive") {
       setSuggestionState({ type: "active", suggestions: [] });
     }
   }, [setSuggestionState, suggestionState.type]);
 
   return (
-    <FlexRow>
-      <FlexColumn>
-        <InputField
-          forwardRef={inputRef}
-          value={inputValue}
-          onChange={onSearchTermChanged}
-          onBlur={noop}
-          onFocus={activateSuggestions}
-        />
-        <div ref={autoAnimateRef}>
-          {invitedUsers.map(user => (
-            <UserCard
-              key={user.id}
-              name={user.name}
-              avatar={user.avatar}
-              email={user.email}
-              onRemove={() => removeInvitedUser(user.id)}
-              onClick={noop}
+    <RightSidebar bgColor={"white"}>
+      <Padding p={20}>
+        <FlexRow>
+          <FlexColumn>
+            <InputField
+              value={inputValue}
+              onChange={onSearchTermChanged}
+              onBlur={noop}
+              onFocus={activateSuggestions}
+              forwardRef={inputRef}
             />
-          ))}
-        </div>
-      </FlexColumn>
-      <Popup isShown={suggestionState.type === "active"} anchorRef={inputRef} onClickOutside={dismissSuggestions}>
-        <CardBackground borderColor="rgb(240, 242, 246)" bgColor="white" hoverColor="transparent">
-          {suggestionState.type === "active"
-            ? suggestionState.suggestions.map(user => (
-                <SuggestionCard
-                  key={user.id}
-                  name={user.name}
-                  email={user.email}
-                  avatar={user.avatar}
-                  onClick={() => addInvitedUser(user)}
-                />
-              ))
-            : null}
-        </CardBackground>
-      </Popup>
-    </FlexRow>
+            <FlexRow>
+              <CalendarLabel>Attendees</CalendarLabel>
+              <HorizontalSpacer w={50} />
+              <div ref={autoAnimateRef}>
+                {invitedUsers.map(user => (
+                  <UserCard
+                    key={user.id}
+                    name={user.name}
+                    avatar={user.avatar}
+                    available={Math.random() > 0.5}
+                    onRemove={() => removeInvitedUser(user.id)}
+                    onClick={noop}
+                  />
+                ))}
+              </div>
+            </FlexRow>
+          </FlexColumn>
+          <SuggestionPopup
+            anchorRef={inputRef}
+            suggestionState={suggestionState}
+            dismissSuggestions={dismissSuggestions}
+            addInvitedUser={addInvitedUser}
+          />
+        </FlexRow>
+      </Padding>
+    </RightSidebar>
   );
 }
 
