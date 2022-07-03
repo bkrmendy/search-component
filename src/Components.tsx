@@ -5,11 +5,13 @@ export const FlexRow = styled.div<{ justifyContent?: string; alignItems?: string
   flex-direction: row;
   justify-content: ${props => props.justifyContent ?? "start"};
   align-items: ${props => props.alignItems ?? "start"};
+  width: 100%;
 `;
 
 export const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const VerticalSpacer = styled.div<{ h: number }>`
@@ -121,4 +123,17 @@ export const RightSidebar = styled.div<{ bgColor: string }>`
   right: 0px;
   width: 400px;
   background-color: ${props => props.bgColor};
+`;
+
+export const MentionComponent = styled.span`
+  margin: 4px 2px;
+  vertical-align: baseline;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: rgb(113, 97, 236);
+  color: white;
+  line-height: 22px;
+  padding: 2px 4px;
+  font-weight: 400;
+  white-space: nowrap;
 `;
