@@ -37,5 +37,15 @@ export function diffStates(before: Descendant[], after: Descendant[]): Diff {
     return {
         removed
     };
+}
 
+export function filterNodes(descendants: Descendant[], fn: (d: Descendant) => boolean): Descendant[] {
+    return descendants.reduce((acc: Descendant[], val: Descendant) => {
+        const shouldRecurse = fn(val);
+        if (shouldRecurse) {
+            const next = Element.isElement(val) ? { ...val, children: filterNodes(val.children, fn) } : val;
+            return [...acc, next];
+        }
+        return acc;
+    }, []);
 }

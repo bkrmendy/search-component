@@ -11,7 +11,7 @@ import {
 import { InputField } from "./InputField";
 import { UserCard } from "./UserCard";
 import { UserInfo } from "./UserInfo";
-import { noop } from "./Utils";
+import { noop, Observer, ReifiedFunction } from "./Utils";
 
 import autoAnimate from "@formkit/auto-animate";
 
@@ -22,13 +22,28 @@ function addInvitedUserI(users: UserInfo[], user: UserInfo): UserInfo[] {
   return [...users, user];
 }
 
+type Remover = (_: string[]) => void;
+
 function App() {
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
+  const [removeListener, setRemoveListener] = React.useState<ReifiedFunction<Remover>>({ fn: noop });
 
   const autoAnimateRef = React.useRef(null);
 
-  const removeInvitedUser = (userId: string) => setInvitedUsers(invitedUsers.filter(user => user.id !== userId));
-  const addInvitedUser = (userInfo: UserInfo) => setInvitedUsers(addInvitedUserI(invitedUsers, userInfo));
+  const removeInvitedUser = React.useCallback(
+    (userIds: string[]) => {
+      removeListener.fn(userIds);
+      setInvitedUsers(invitedUsers.filter(user => !userIds.includes(user.id)));
+    },
+    [invitedUsers, removeListener]
+  );
+
+  const removeObserver: Observer<string[]> = React.useMemo(() => ({ observe: fn => setRemoveListener({ fn }) }), []);
+
+  const addInvitedUser = React.useCallback(
+    (userInfo: UserInfo) => setInvitedUsers(addInvitedUserI(invitedUsers, userInfo)),
+    [invitedUsers]
+  );
 
   React.useEffect(() => {
     autoAnimateRef.current && autoAnimate(autoAnimateRef.current, { duration: 100 });
@@ -42,7 +57,7 @@ function App() {
             <InputField
               addInvitedUser={addInvitedUser}
               onInvitedUserRemoved={removeInvitedUser}
-              removeInvitedUser={noop}
+              removeInvitedUser={removeObserver}
             />
             <VerticalSpacer h={16} />
             <FlexRow>
@@ -55,7 +70,7 @@ function App() {
                     name={user.name}
                     avatar={user.avatar}
                     available={Math.random() > 0.5}
-                    onRemove={() => removeInvitedUser(user.id)}
+                    onRemove={() => removeInvitedUser([user.id])}
                     onClick={noop}
                   />
                 ))}

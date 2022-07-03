@@ -1,32 +1,49 @@
 import React, { KeyboardEventHandler } from "react";
-import { createEditor, Descendant, Range, Editor } from "slate";
+import { createEditor, Descendant, Range, Editor, Element as SlateElement, Transforms } from "slate";
 import { withHistory } from "slate-history";
-import { Editable, RenderElementProps, Slate, withReact } from "slate-react";
+import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from "slate-react";
 import { InputFieldComp } from "./Components";
-import { diffStates } from "./mentions/Utils";
+import { diffStates, filterNodes } from "./mentions/Utils";
 import { withMentions, Element, insertMention } from "./mentions/withMentions";
 import { userInfoMatchesSearchTerm } from "./SearchUtils";
 import { SuggestionPopup } from "./SuggestionPopup";
-import { SuggestionState } from "./SuggestionState";
 import { UserInfo, USERS } from "./UserInfo";
-import { positiveMod } from "./Utils";
+import { Observer, positiveMod } from "./Utils";
 
 interface InputFieldProps {
   addInvitedUser: (_: UserInfo) => void;
-  removeInvitedUser: (userId: string) => void;
-  onInvitedUserRemoved: (userId: string) => void;
+  removeInvitedUser: Observer<string[]>;
+  onInvitedUserRemoved: (userIds: string[]) => void;
 }
 
-export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldProps) => {
+export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvitedUser }: InputFieldProps) => {
   const [editorState, setEditorState] = React.useState<Descendant[]>(initialValue);
-  const [suggestionState, setSuggestionState] = React.useState<SuggestionState>({ type: "active", suggestions: [] });
+  const [suggestions, setSuggestions] = React.useState<UserInfo[]>([]);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
-  const renderElement = React.useCallback((props: RenderElementProps) => <Element {...props} />, []);
+  const editor = React.useMemo(() => withHistory(withReact(withMentions(createEditor()))), []);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const editor = React.useMemo(() => withHistory(withReact(withMentions(createEditor()))), []);
+  React.useEffect(() => {
+    removeInvitedUser.observe(ids => {
+      const filtered = filterNodes(editorState, node => {
+        const isMention = SlateElement.isElement(node) && node.type === "mention";
+        if (!isMention) {
+          return true;
+        }
+        return !ids.includes(node.userId);
+      });
+      ReactEditor.deselect(editor);
+      ReactEditor.blur(editor);
+      window.getSelection()?.empty();
+      setEditorState(filtered);
+      console.log(filtered);
+      editor.children = filtered;
+    });
+  }, [editor, editorState, removeInvitedUser, setEditorState]);
+
+  const renderElement = React.useCallback((props: RenderElementProps) => <Element {...props} />, []);
 
   const addInvitedUserI = React.useCallback(
     (userInfo: UserInfo) => {
@@ -39,7 +56,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldP
 
   const onKeyDown = React.useCallback<KeyboardEventHandler<HTMLDivElement>>(
     e => {
-      if (suggestionState.type !== "active" || suggestionState.suggestions.length === 0) {
+      if (suggestions.length === 0) {
         return;
       }
 
@@ -48,22 +65,22 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldP
         if (selectedIndex == null) {
           setSelectedIndex(0);
         } else {
-          setSelectedIndex(positiveMod(selectedIndex + 1, suggestionState.suggestions.length));
+          setSelectedIndex(positiveMod(selectedIndex + 1, suggestions.length));
         }
       }
 
       if (e.code === "ArrowUp") {
         e.preventDefault();
         if (selectedIndex == null) {
-          setSelectedIndex(suggestionState.suggestions.length - 1);
+          setSelectedIndex(suggestions.length - 1);
         } else {
-          setSelectedIndex(positiveMod(selectedIndex - 1, suggestionState.suggestions.length));
+          setSelectedIndex(positiveMod(selectedIndex - 1, suggestions.length));
         }
       }
 
       if (e.code === "Escape") {
         e.preventDefault();
-        setSuggestionState({ type: "active", suggestions: [] });
+        setSuggestions([]);
       }
 
       if (e.code === "Enter") {
@@ -72,7 +89,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldP
           return;
         }
 
-        const user = suggestionState.suggestions[selectedIndex];
+        const user = suggestions[selectedIndex];
         if (user != null) {
           addInvitedUserI(user);
         }
@@ -81,7 +98,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldP
       }
     },
 
-    [addInvitedUserI, selectedIndex, suggestionState]
+    [addInvitedUserI, selectedIndex, suggestions]
   );
 
   const onChange = React.useCallback(
@@ -95,34 +112,33 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved }: InputFieldP
         const beforeText = beforeRange && Editor.string(editor, beforeRange);
         if (beforeText != null) {
           const suggestions = USERS.filter(user => userInfoMatchesSearchTerm(beforeText, user.name));
-          setSuggestionState({ type: "active", suggestions });
+          setSuggestions(suggestions);
         }
       }
 
-      const { removed } = diffStates(editorState, nextState);
-      console.log(removed);
-      removed.forEach(id => onInvitedUserRemoved(id));
-
       setEditorState(nextState);
+      const { removed } = diffStates(editorState, nextState);
+      if (removed.length > 0) {
+        onInvitedUserRemoved(removed);
+      }
     },
     [editor, editorState, onInvitedUserRemoved]
   );
 
-  const dismissSuggestions = React.useCallback(
-    () => setSuggestionState({ type: "active", suggestions: [] }),
-    [setSuggestionState]
-  );
+  const dismissSuggestions = React.useCallback(() => setSuggestions([]), [setSuggestions]);
 
   return (
     <>
-      <InputFieldComp ref={inputRef}>
-        <Slate editor={editor} value={editorState} onChange={onChange}>
-          <Editable placeholder="Add meeting invitees" onKeyDown={onKeyDown} renderElement={renderElement} />
-        </Slate>
-      </InputFieldComp>
+      <div ref={inputRef}>
+        <InputFieldComp>
+          <Slate editor={editor} value={editorState} onChange={onChange}>
+            <Editable placeholder="Add meeting invitees" onKeyDown={onKeyDown} renderElement={renderElement} />
+          </Slate>
+        </InputFieldComp>
+      </div>
       <SuggestionPopup
         anchorRef={inputRef}
-        suggestions={suggestionState.type === "active" ? suggestionState.suggestions : []}
+        suggestions={suggestions}
         selectedIndex={selectedIndex}
         dismissSuggestions={dismissSuggestions}
         setSelectedIndex={setSelectedIndex}

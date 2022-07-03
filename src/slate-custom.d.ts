@@ -1,4 +1,4 @@
-import { BaseEditor, BaseElement, Text } from "slate";
+import { BaseEditor, BaseElement } from "slate";
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
 
@@ -6,7 +6,6 @@ interface MentionElement extends BaseElement {
   type: "mention";
   content: string;
   userId: string;
-  children: Text[];
 }
 
 interface ParapgraphElement extends BaseElement {

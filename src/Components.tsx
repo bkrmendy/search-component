@@ -28,6 +28,7 @@ export const Label = styled.span`
   user-select: none;
   font-size: 13px;
   font-weight: 500;
+  user-select: none;
 `;
 
 export const Detail = styled.span`
@@ -36,6 +37,7 @@ export const Detail = styled.span`
   color: rgba(132, 135, 147, 0.75);
   line-height: 13px;
   font-weight: 500;
+  user-select: none;
 `;
 
 export const CalendarLabel = styled.span`
@@ -44,6 +46,7 @@ export const CalendarLabel = styled.span`
   font-size: 13px;
   line-height: 16px;
   color: rgb(132, 135, 147);
+  user-select: none;
 `;
 
 export const Title = styled.div`
@@ -51,6 +54,7 @@ export const Title = styled.div`
   font-size: 15px;
   font-weight: 600;
   font-family: sans-serif;
+  user-select: none;
 `;
 
 interface CardBackgroundColors {
@@ -103,6 +107,8 @@ export const Button = styled(Clickable)<{ width: number; xxColor: string; hoverC
   width: ${props => props.width}px;
   color: ${props => props.xxColor};
 
+  user-select: none;
+
   transition: background-color 0.1s;
 
   &:hover {
@@ -136,4 +142,5 @@ export const MentionComponent = styled.span`
   padding: 2px 4px;
   font-weight: 400;
   white-space: nowrap;
+  user-select: none;
 `;
