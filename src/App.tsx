@@ -26,21 +26,20 @@ type Remover = (_: string[]) => void;
 
 function App() {
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
-  const [removeListener, setRemoveListener] = React.useState<ReifiedFunction<Remover>>({ fn: noop });
+  const listenerRef = React.useRef<ReifiedFunction<Remover>>({ fn: noop });
 
   const autoAnimateRef = React.useRef(null);
 
   const removeInvitedUser = React.useCallback(
     (userIds: string[]) => {
-      removeListener.fn(userIds);
       setInvitedUsers(invitedUsers.filter(user => !userIds.includes(user.id)));
     },
-    [invitedUsers, removeListener]
+    [invitedUsers]
   );
 
   const removeObserver: Observer<string[]> = React.useMemo(
-    () => ({ observe: fn => setRemoveListener({ fn }) }),
-    [setRemoveListener]
+    () => ({ observe: fn => (listenerRef.current.fn = fn) }),
+    []
   );
 
   const addInvitedUser = React.useCallback(
@@ -73,7 +72,10 @@ function App() {
                     name={user.name}
                     avatar={user.avatar}
                     available={Math.random() > 0.5}
-                    onRemove={() => removeInvitedUser([user.id])}
+                    onRemove={() => {
+                      removeInvitedUser([user.id]);
+                      listenerRef.current.fn([user.id]);
+                    }}
                     onClick={noop}
                   />
                 ))}

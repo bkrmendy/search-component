@@ -131,12 +131,12 @@ export const RightSidebar = styled.div<{ bgColor: string }>`
   background-color: ${props => props.bgColor};
 `;
 
-export const MentionComponent = styled.span`
+export const MentionComponent = styled.span<{ selected: boolean }>`
   margin: 4px 2px;
   vertical-align: baseline;
   display: inline-block;
   border-radius: 4px;
-  background-color: rgb(113, 97, 236);
+  background-color: ${props => (props.selected ? "rgb(123, 107, 246)" : "rgb(113, 97, 236)")};
   color: white;
   line-height: 22px;
   padding: 2px 4px;

@@ -1,5 +1,5 @@
 import { Transforms } from "slate";
-import { RenderElementProps } from "slate-react";
+import { RenderElementProps, useFocused, useSelected } from "slate-react";
 import { MentionComponent } from "../Components";
 import { CustomEditor, CustomElement } from "../slate-custom";
 import { UserInfo } from "../UserInfo";
@@ -46,8 +46,16 @@ type MentionProps = RenderElementProps & {
 };
 
 const Mention = ({ attributes, content, userId, children }: MentionProps) => {
+  const selected = useSelected();
+  const focused = useFocused();
   return (
-    <MentionComponent {...attributes} contentEditable={false} spellCheck="false" data-cy={`mention-${userId}`}>
+    <MentionComponent
+      {...attributes}
+      contentEditable={false}
+      spellCheck="false"
+      data-cy={`mention-${userId}`}
+      selected={selected && focused}
+    >
       {children}
       {content}
     </MentionComponent>
