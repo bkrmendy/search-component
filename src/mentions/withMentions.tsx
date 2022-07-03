@@ -26,7 +26,6 @@ export const insertMention = (editor: CustomEditor, user: UserInfo) => {
       content: user.name,
       children: [{ text: "" }],
     },
-    { text: " " },
   ]);
   Transforms.move(editor);
 };

@@ -38,7 +38,10 @@ function App() {
     [invitedUsers, removeListener]
   );
 
-  const removeObserver: Observer<string[]> = React.useMemo(() => ({ observe: fn => setRemoveListener({ fn }) }), []);
+  const removeObserver: Observer<string[]> = React.useMemo(
+    () => ({ observe: fn => setRemoveListener({ fn }) }),
+    [setRemoveListener]
+  );
 
   const addInvitedUser = React.useCallback(
     (userInfo: UserInfo) => setInvitedUsers(addInvitedUserI(invitedUsers, userInfo)),

@@ -1,5 +1,5 @@
 import React, { KeyboardEventHandler } from "react";
-import { createEditor, Descendant, Range, Editor, Element as SlateElement, Transforms } from "slate";
+import { createEditor, Descendant, Range, Editor, Element as SlateElement } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from "slate-react";
 import { InputFieldComp } from "./Components";
@@ -38,7 +38,6 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
       ReactEditor.blur(editor);
       window.getSelection()?.empty();
       setEditorState(filtered);
-      console.log(filtered);
       editor.children = filtered;
     });
   }, [editor, editorState, removeInvitedUser, setEditorState]);
@@ -132,7 +131,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
       <div ref={inputRef}>
         <InputFieldComp>
           <Slate editor={editor} value={editorState} onChange={onChange}>
-            <Editable placeholder="Add meeting invitees" onKeyDown={onKeyDown} renderElement={renderElement} />
+            <Editable placeholder="Event name" onKeyDown={onKeyDown} renderElement={renderElement} />
           </Slate>
         </InputFieldComp>
       </div>
