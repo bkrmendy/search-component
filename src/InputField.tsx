@@ -109,7 +109,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
         const wordBefore = Editor.before(editor, start, { unit: "word" });
         const beforeRange = wordBefore && Editor.range(editor, wordBefore, start);
         const beforeText = beforeRange && Editor.string(editor, beforeRange);
-        if (beforeText != null) {
+        if (beforeText != null && beforeText.length > 1) {
           const suggestions = USERS.filter(user => userInfoMatchesSearchTerm(beforeText, user.name));
           setSuggestions(suggestions);
         }
