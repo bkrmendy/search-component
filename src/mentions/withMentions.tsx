@@ -35,7 +35,7 @@ export const Element = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
   switch (element.type) {
     case "mention":
-      return <Mention {...props} content={element.content} />;
+      return <Mention {...props} content={element.content} userId={element.userId} />;
     default:
       return <span {...attributes}>{children}</span>;
   }
@@ -43,11 +43,13 @@ export const Element = (props: RenderElementProps) => {
 
 type MentionProps = RenderElementProps & {
   content: string;
+  userId: string;
 };
 
-const Mention = ({ attributes, content }: MentionProps) => {
+const Mention = ({ attributes, content, userId, children }: MentionProps) => {
   return (
-    <MentionComponent {...attributes} contentEditable={false} spellCheck="false">
+    <MentionComponent {...attributes} contentEditable={false} spellCheck="false" data-cy={`mention-${userId}`}>
+      {children}
       {content}
     </MentionComponent>
   );
