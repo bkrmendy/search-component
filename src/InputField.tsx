@@ -1,6 +1,5 @@
 import React, { KeyboardEventHandler } from "react";
 import { createEditor, Descendant, Range, Editor, Element as SlateElement } from "slate";
-import { withHistory } from "slate-history";
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from "slate-react";
 import { InputFieldComp } from "./Components";
 import { diffStates, filterNodes } from "./mentions/Utils";
@@ -27,7 +26,7 @@ export const InputField = ({
   const [suggestions, setSuggestions] = React.useState<UserInfo[]>([]);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
-  const editor = React.useMemo(() => withHistory(withReact(withMentions(createEditor()))), []);
+  const editor = React.useMemo(() => withReact(withMentions(createEditor())), []);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 

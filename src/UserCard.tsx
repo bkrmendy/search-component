@@ -48,7 +48,7 @@ export const UserCard = (props: UserCardProps) => {
           </FlexColumn>
           <HorizontalSpacer w={10} />
         </FlexRow>
-        <Button onClick={props.onRemove} width={16} xxColor={"rgb(231, 232, 236)"} hoverColor={"rgb(242, 242, 245)"}>
+        <Button onClick={props.onRemove} width={16} xxColor={"rgb(231, 232, 236)"} hoverColor={"rgb(189, 189, 191)"}>
           <CloseIcon />
         </Button>
         <HorizontalSpacer w={5} />
