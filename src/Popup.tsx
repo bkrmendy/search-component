@@ -1,8 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import styled from "styled-components";
 import { Handler } from "./Utils";
+import { ZStack } from "./ZStack";
 
 const PopupOverlay = styled.div`
   position: absolute;
@@ -37,12 +37,9 @@ export const Popup = (props: React.PropsWithChildren<PopupProps>) => {
 
   return (
     <PopupOverlay onClick={props.onClickOutside}>
-      {ReactDOM.createPortal(
-        <PopupContainer ref={popperRef} style={styles.popper} {...attributes.popper}>
-          {props.children}
-        </PopupContainer>,
-        document.body
-      )}
+      <PopupContainer ref={popperRef} style={styles.popper} {...attributes.popper}>
+        {props.children}
+      </PopupContainer>
     </PopupOverlay>
   );
 };
@@ -54,4 +51,6 @@ const PopupContainer = styled.div`
   padding: 4px;
 
   background-color: white;
+
+  z-index: ${ZStack.POPUP};
 `;

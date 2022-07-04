@@ -49,6 +49,7 @@ export const SuggestionCard = (props: SuggestionCardProps) => {
             <VerticalSpacer h={4} />
             <Detail>{props.email}</Detail>
           </FlexColumn>
+          <HorizontalSpacer w={10} />
         </FlexRow>
       </CardBackground>
     </Clickable>
