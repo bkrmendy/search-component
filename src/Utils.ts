@@ -9,10 +9,13 @@ export const isAlphaNumeric = (s: string): boolean => [...s].every(c => {
 
 export const positiveMod = (n: number, modulo: number) => ((n % modulo) + modulo) % modulo;
 
-export interface Observer<Event> {
-    observe: (fn: (_: Event) => void) => void;
-}
+type Listener<Event> = (_: Event) => void;
+export class Observer<Event> {
+    private listeners: Set<Listener<Event>> = new Set();
 
-export interface ReifiedFunction<T extends Function> {
-    fn: T;
+    public register = (listener: Listener<Event>) => { this.listeners.add(listener); }
+
+    public unregister = (listener: Listener<Event>) => { this.listeners.delete(listener); }
+
+    public broadcast = (event: Event) => { this.listeners.forEach(listener => listener(event)); }
 }

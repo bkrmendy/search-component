@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import styled from "styled-components";
 import { Handler } from "./Utils";
@@ -32,15 +33,16 @@ export const Popup = (props: React.PropsWithChildren<PopupProps>) => {
   });
 
   if (!props.isShown) {
-    return null;
+    return <div ref={popperRef} style={{ display: "none" }} />;
   }
 
-  return (
+  return ReactDOM.createPortal(
     <PopupOverlay onClick={props.onClickOutside}>
       <PopupContainer ref={popperRef} style={styles.popper} {...attributes.popper}>
         {props.children}
       </PopupContainer>
-    </PopupOverlay>
+    </PopupOverlay>,
+    document.body
   );
 };
 

@@ -10,8 +10,8 @@ import {
 } from "./Components";
 import { InputField } from "./InputField";
 import { UserCard } from "./UserCard";
-import { UserInfo } from "./UserInfo";
-import { noop, Observer, ReifiedFunction } from "./Utils";
+import { isUserAvailable, UserInfo } from "./UserInfo";
+import { noop, Observer } from "./Utils";
 
 import autoAnimate from "@formkit/auto-animate";
 
@@ -22,11 +22,9 @@ function addInvitedUserI(users: UserInfo[], user: UserInfo): UserInfo[] {
   return [...users, user];
 }
 
-type Remover = (_: string[]) => void;
-
 function App() {
   const [invitedUsers, setInvitedUsers] = React.useState<UserInfo[]>([]);
-  const listenerRef = React.useRef<ReifiedFunction<Remover>>({ fn: noop });
+  const removeObserver = React.useMemo<Observer<string[]>>(() => new Observer(), []);
 
   const autoAnimateRef = React.useRef(null);
 
@@ -35,11 +33,6 @@ function App() {
       setInvitedUsers(invitedUsers.filter(user => !userIds.includes(user.id)));
     },
     [invitedUsers]
-  );
-
-  const removeObserver: Observer<string[]> = React.useMemo(
-    () => ({ observe: fn => (listenerRef.current.fn = fn) }),
-    []
   );
 
   const addInvitedUser = React.useCallback(
@@ -57,9 +50,10 @@ function App() {
         <FlexRow>
           <FlexColumn>
             <InputField
+              invitedUsers={invitedUsers}
+              removeInvitedUser={removeObserver}
               addInvitedUser={addInvitedUser}
               onInvitedUserRemoved={removeInvitedUser}
-              removeInvitedUser={removeObserver}
             />
             <VerticalSpacer h={16} />
             <FlexRow>
@@ -71,10 +65,10 @@ function App() {
                     key={user.id}
                     name={user.name}
                     avatar={user.avatar}
-                    available={Math.random() > 0.5}
+                    available={isUserAvailable(user)}
                     onRemove={() => {
                       removeInvitedUser([user.id]);
-                      listenerRef.current.fn([user.id]);
+                      removeObserver.broadcast([user.id]);
                     }}
                     onClick={noop}
                   />

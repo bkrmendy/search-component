@@ -18,4 +18,6 @@ export const USERS: UserInfo[] = [
   { id: "10", avatar: "https://ui-avatars.com/api/?name=Marianne+Pannell", email: "marianne@company.co", name: "Marianne Pannell" },
   { id: "11", avatar: "https://ui-avatars.com/api/?name=Emiel+Jansen", email: "emiel@risecalendar.com", name: "Emiel Jansen" },
   { id: "12", avatar: "https://ui-avatars.com/api/?name=Berci+Kormendy", email: "bertalan@kormendy.hu", name: "Berci Kormendy" },
-]
+];
+
+export const isUserAvailable = ({ id }: UserInfo) => (parseInt(id, 10) % 2) > 0;

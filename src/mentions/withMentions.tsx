@@ -49,13 +49,7 @@ const Mention = ({ attributes, content, userId, children }: MentionProps) => {
   const selected = useSelected();
   const focused = useFocused();
   return (
-    <MentionComponent
-      {...attributes}
-      contentEditable={false}
-      spellCheck="false"
-      data-cy={`mention-${userId}`}
-      selected={selected && focused}
-    >
+    <MentionComponent {...attributes} contentEditable={false} spellCheck="false" selected={selected && focused}>
       {children}
       {content}
     </MentionComponent>

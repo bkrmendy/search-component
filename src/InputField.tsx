@@ -11,12 +11,18 @@ import { UserInfo, USERS } from "./UserInfo";
 import { Observer, positiveMod } from "./Utils";
 
 interface InputFieldProps {
-  addInvitedUser: (_: UserInfo) => void;
+  invitedUsers: UserInfo[];
   removeInvitedUser: Observer<string[]>;
+  addInvitedUser: (_: UserInfo) => void;
   onInvitedUserRemoved: (userIds: string[]) => void;
 }
 
-export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvitedUser }: InputFieldProps) => {
+export const InputField = ({
+  addInvitedUser,
+  onInvitedUserRemoved,
+  removeInvitedUser,
+  invitedUsers,
+}: InputFieldProps) => {
   const [editorState, setEditorState] = React.useState<Descendant[]>(initialValue);
   const [suggestions, setSuggestions] = React.useState<UserInfo[]>([]);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
@@ -26,7 +32,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    removeInvitedUser.observe(ids => {
+    const onUsersExternallyRemoved = (ids: string[]) => {
       const filtered = filterNodes(editorState, node => {
         const isMention = SlateElement.isElement(node) && node.type === "mention";
         if (!isMention) {
@@ -39,7 +45,10 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
       window.getSelection()?.empty();
       setEditorState(filtered);
       editor.children = filtered;
-    });
+    };
+
+    removeInvitedUser.register(onUsersExternallyRemoved);
+    return () => removeInvitedUser.unregister(onUsersExternallyRemoved);
   }, [editor, editorState, removeInvitedUser, setEditorState]);
 
   const renderElement = React.useCallback((props: RenderElementProps) => <Element {...props} />, []);
@@ -112,7 +121,9 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
         if (beforeText == null || beforeText.length < 2) {
           setSuggestions([]);
         } else {
-          const suggestions = USERS.filter(user => userInfoMatchesSearchTerm(beforeText, user.name));
+          const suggestions = USERS.filter(user => !invitedUsers.some(u => u.id === user.id)).filter(user =>
+            userInfoMatchesSearchTerm(beforeText, user.name)
+          );
           setSuggestions(suggestions);
         }
       }
@@ -123,7 +134,7 @@ export const InputField = ({ addInvitedUser, onInvitedUserRemoved, removeInvited
         onInvitedUserRemoved(removed);
       }
     },
-    [editor, editorState, onInvitedUserRemoved]
+    [editor, editorState, invitedUsers, onInvitedUserRemoved]
   );
 
   const dismissSuggestions = React.useCallback(() => setSuggestions([]), [setSuggestions]);

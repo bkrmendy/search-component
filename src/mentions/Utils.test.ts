@@ -2,7 +2,7 @@ import { BaseElement, Descendant, Element } from "slate";
 import { filterNodes } from "./Utils";
 
 describe("slate utils", () => {
-    it("is correct", () => {
+    it("filter nodes", () => {
         const state: Descendant[] = [
             {
                 "text": ""
@@ -33,7 +33,7 @@ describe("slate utils", () => {
         expect(next.length).toEqual(2);
     });
 
-    it("recurse", () => {
+    it("filter nodes - recursive", () => {
         const state: Descendant[] = [{
             type: "paragraph",
             children: [
@@ -67,4 +67,6 @@ describe("slate utils", () => {
         expect(next.length).toEqual(1);
         expect((next[0] as BaseElement).children.length).toEqual(2);
     });
+
+    
 })
