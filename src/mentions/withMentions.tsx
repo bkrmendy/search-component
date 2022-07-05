@@ -4,7 +4,7 @@ import { MentionComponent } from "../Components";
 import { CustomEditor, CustomElement } from "../slate-custom";
 import { UserInfo } from "../UserInfo";
 
-export const withMentions = (editor: CustomEditor) => {
+export const withMentions = (editor: CustomEditor): CustomEditor => {
   const { isInline, isVoid } = editor;
 
   editor.isInline = (element: CustomElement) => {

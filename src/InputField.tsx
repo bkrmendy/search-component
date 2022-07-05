@@ -1,5 +1,5 @@
 import React, { KeyboardEventHandler } from "react";
-import { createEditor, Descendant, Range, Editor, Element as SlateElement } from "slate";
+import { createEditor, Descendant, Range, Editor, Element as SlateElement, Transforms } from "slate";
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from "slate-react";
 import { InputFieldComp } from "./Components";
 import { diffStates, filterNodes } from "./mentions/Utils";
@@ -44,6 +44,7 @@ export const InputField = ({
       window.getSelection()?.empty();
       setEditorState(filtered);
       editor.children = filtered;
+      Editor.normalize(editor, { force: true });
     };
 
     removeInvitedUser.register(onUsersExternallyRemoved);

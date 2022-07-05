@@ -1,6 +1,5 @@
 import { BaseEditor, BaseElement } from "slate";
 import { ReactEditor } from "slate-react";
-import { HistoryEditor } from "slate-history";
 
 interface MentionElement extends BaseElement {
   type: "mention";
@@ -13,7 +12,7 @@ interface ParapgraphElement extends BaseElement {
 }
 
 export type CustomElement = ParapgraphElement | MentionElement
-export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
+export type CustomEditor = BaseEditor & ReactEditor;
 
 declare module "slate" {
   export interface CustomTypes {
