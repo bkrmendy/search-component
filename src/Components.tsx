@@ -58,7 +58,6 @@ export const Title = styled.div`
 `;
 
 interface CardBackgroundColors {
-  borderColor: string;
   bgColor: string;
   hoverColor: string;
 }
@@ -66,12 +65,13 @@ interface CardBackgroundColors {
 export const CardBackground = styled.div<CardBackgroundColors>`
   box-sizing: border-box;
   border-radius: 8px;
-  border: 1px solid ${props => props.borderColor};
 
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 4px;
   padding-right: 4px;
+
+  min-width: 200px;
 
   background-color: ${props => props.bgColor};
 
@@ -82,10 +82,18 @@ export const CardBackground = styled.div<CardBackgroundColors>`
   }
 `;
 
+export const AvatarContainer = styled.div`
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  background: linear-gradient(153deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+`;
+
 export const AvatarImg = styled.img`
   border-radius: 50%;
   height: 40px;
   width: 40px;
+  object-fit: cover;
 `;
 
 export const Clickable = styled.div`

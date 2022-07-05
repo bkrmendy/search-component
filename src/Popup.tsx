@@ -1,9 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
 import { Handler } from "./Utils";
 import { ZStack } from "./ZStack";
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 
 const PopupOverlay = styled.div`
   position: absolute;
@@ -55,4 +65,10 @@ const PopupContainer = styled.div`
   background-color: white;
 
   z-index: ${ZStack.POPUP};
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: ${fadeIn};
+    animation-fill-mode: backwards;
+    animation-duration: 400ms;
+  }
 `;

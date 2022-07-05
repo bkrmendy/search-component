@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  AvatarContainer,
   AvatarImg,
   Box,
   Button,
@@ -31,11 +32,13 @@ export const UserCard = (props: UserCardProps) => {
   const availabilityLabel = props.available ? "Available" : "Unavailable";
 
   return (
-    <CardBackground borderColor="transparent" bgColor="transparent" hoverColor="rgb(241, 242, 246)">
+    <CardBackground bgColor="transparent" hoverColor="#f2f2f5">
       <FlexRow onClick={props.onClick} justifyContent="space-between" alignItems="center">
         <FlexRow justifyContent="start" alignItems="center">
           <HorizontalSpacer w={10} />
-          <AvatarImg src={props.avatar} />
+          <AvatarContainer>
+            <AvatarImg src={props.avatar} alt="" />
+          </AvatarContainer>
           <HorizontalSpacer w={10} />
           <FlexColumn>
             <Label>{props.name}</Label>

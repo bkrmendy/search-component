@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  AvatarContainer,
   AvatarImg,
   CardBackground,
   Clickable,
@@ -34,15 +35,17 @@ export const SuggestionCard = (props: SuggestionCardProps) => {
     [onClick]
   );
 
-  const hoverColor = "rgb(241, 242, 246)";
+  const hoverColor = "#f2f2f5";
   const bgColor = isSelected ? hoverColor : "transparent";
 
   return (
     <Clickable onClick={onClickI} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      <CardBackground borderColor="transparent" bgColor={bgColor} hoverColor={hoverColor}>
+      <CardBackground bgColor={bgColor} hoverColor={hoverColor}>
         <FlexRow alignItems="center">
           <HorizontalSpacer w={10} />
-          <AvatarImg src={props.avatar} />
+          <AvatarContainer>
+            <AvatarImg src={props.avatar} alt="" />
+          </AvatarContainer>
           <HorizontalSpacer w={10} />
           <FlexColumn>
             <Label>{props.name}</Label>
