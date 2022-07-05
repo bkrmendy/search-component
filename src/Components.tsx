@@ -129,6 +129,7 @@ export const InputFieldComp = styled.div`
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
+  min-height: 30px;
 `;
 
 export const RightSidebar = styled.div<{ bgColor: string }>`
@@ -140,7 +141,8 @@ export const RightSidebar = styled.div<{ bgColor: string }>`
 `;
 
 export const MentionComponent = styled.span<{ selected: boolean }>`
-  margin: 4px 2px;
+  box-sizing: border-box;
+  margin: 2px 2px;
   vertical-align: baseline;
   display: inline-block;
   border-radius: 4px;
