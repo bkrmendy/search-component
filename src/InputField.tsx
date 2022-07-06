@@ -24,7 +24,7 @@ export const InputField = ({
 }: InputFieldProps) => {
   const [editorState, setEditorState] = React.useState<Descendant[]>(initialValue);
   const [suggestions, setSuggestions] = React.useState<UserInfo[]>([]);
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(0);
 
   const editor = React.useMemo(() => withReact(withMentions(createEditor())), []);
 
@@ -101,8 +101,6 @@ export const InputField = ({
         if (user != null) {
           addInvitedUserI(user);
         }
-
-        // dismissSuggestions();
       }
     },
 
@@ -139,12 +137,14 @@ export const InputField = ({
 
   const dismissSuggestions = React.useCallback(() => setSuggestions([]), [setSuggestions]);
 
+  const onBlur = React.useCallback(() => setSuggestions([]), []);
+
   return (
     <>
       <div ref={inputRef}>
         <InputFieldComp>
           <Slate editor={editor} value={editorState} onChange={onChange}>
-            <Editable placeholder="Event name" onKeyDown={onKeyDown} renderElement={renderElement} />
+            <Editable placeholder="Event name" onKeyDown={onKeyDown} onBlur={onBlur} renderElement={renderElement} />
           </Slate>
         </InputFieldComp>
       </div>
