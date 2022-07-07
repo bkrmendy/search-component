@@ -1,4 +1,5 @@
 import React from "react";
+import { AvatarImage } from "./AvatarImage";
 import {
   AvatarContainer,
   AvatarImg,
@@ -36,9 +37,7 @@ export const UserCard = (props: UserCardProps) => {
       <FlexRow onClick={props.onClick} justifyContent="space-between" alignItems="center">
         <FlexRow justifyContent="start" alignItems="center">
           <HorizontalSpacer w={10} />
-          <AvatarContainer>
-            <AvatarImg src={props.avatar} alt="" />
-          </AvatarContainer>
+          <AvatarImage src={props.avatar} />
           <HorizontalSpacer w={10} />
           <FlexColumn>
             <Label>{props.name}</Label>

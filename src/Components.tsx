@@ -89,11 +89,12 @@ export const AvatarContainer = styled.div`
   background: linear-gradient(153deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
 `;
 
-export const AvatarImg = styled.img`
+export const AvatarImg = styled.img<{ loaded: boolean }>`
   border-radius: 50%;
   height: 40px;
   width: 40px;
   object-fit: cover;
+  opacity: ${props => props.loaded ? 1 : 0};
 `;
 
 export const Clickable = styled.div`

@@ -1,4 +1,5 @@
 import React from "react";
+import { AvatarImage } from "./AvatarImage";
 import {
   AvatarContainer,
   AvatarImg,
@@ -43,9 +44,7 @@ export const SuggestionCard = (props: SuggestionCardProps) => {
       <CardBackground bgColor={bgColor} hoverColor={hoverColor}>
         <FlexRow alignItems="center">
           <HorizontalSpacer w={10} />
-          <AvatarContainer>
-            <AvatarImg src={props.avatar} alt="" />
-          </AvatarContainer>
+          <AvatarImage src={props.avatar} />
           <HorizontalSpacer w={10} />
           <FlexColumn>
             <Label>{props.name}</Label>
