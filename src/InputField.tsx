@@ -64,6 +64,18 @@ export const InputField = ({
 
   const onKeyDown = React.useCallback<KeyboardEventHandler<HTMLDivElement>>(
     e => {
+      if (e.code === "Enter") {
+        e.preventDefault();
+        if (selectedIndex == null) {
+          return;
+        }
+
+        const user = suggestions[selectedIndex];
+        if (user != null) {
+          addInvitedUserI(user);
+        }
+      }
+      
       if (suggestions.length === 0) {
         return;
       }
@@ -89,18 +101,6 @@ export const InputField = ({
       if (e.code === "Escape") {
         e.preventDefault();
         setSuggestions([]);
-      }
-
-      if (e.code === "Enter") {
-        e.preventDefault();
-        if (selectedIndex == null) {
-          return;
-        }
-
-        const user = suggestions[selectedIndex];
-        if (user != null) {
-          addInvitedUserI(user);
-        }
       }
     },
 
