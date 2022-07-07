@@ -1,8 +1,6 @@
 import React from "react";
 import { AvatarImage } from "./AvatarImage";
 import {
-  AvatarContainer,
-  AvatarImg,
   CardBackground,
   Clickable,
   Detail,
