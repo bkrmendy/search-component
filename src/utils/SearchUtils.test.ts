@@ -1,26 +1,4 @@
-import { tokenizeInput, userInfoMatchesSearchTerm } from "./SearchUtils";
-
-describe("tokenise", () => {
-    it("happy path", () => {
-        const results = tokenizeInput("aaa / BBB <> ccc");
-        expect(results).toEqual(["aaa", "BBB", "ccc"]);
-    });
-
-    it("single word", () => {
-        const results = tokenizeInput("aaa");
-        expect(results).toEqual(["aaa"]);
-    });
-
-    it("empty string", () => {
-        const results = tokenizeInput("");
-        expect(results).toEqual([]);
-    });
-
-    it("all non-alphanumeric", () => {
-        const results = tokenizeInput("+='/$#");
-        expect(results).toEqual([]);
-    });
-});
+import { userInfoMatchesSearchTerm } from "./SearchUtils";
 
 describe("userInfoMatchesSearchTerm", () => {
     it("happy path", () => {

@@ -2,12 +2,12 @@ import React, { KeyboardEventHandler } from "react";
 import { createEditor, Descendant, Range, Editor, Element as SlateElement } from "slate";
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from "slate-react";
 import { InputFieldComp } from "./Components";
-import { diffStates, filterNodes } from "./mentions/Utils";
-import { withMentions, Element, insertMention } from "./mentions/withMentions";
-import { userInfoMatchesSearchTerm } from "./SearchUtils";
+import { userInfoMatchesSearchTerm } from "../utils/SearchUtils";
 import { SuggestionPopup } from "./SuggestionPopup";
-import { UserInfo, USERS } from "./UserInfo";
-import { Observer, positiveMod } from "./Utils";
+import { Observer, positiveMod } from "../utils/Utils";
+import { withMentions, Element, insertMention } from "../slate/mentions/withMentions";
+import { UserInfo, USERS } from "../data/UserInfo";
+import { diffStates, filterNodes } from "../slate/mentions/Utils";
 
 interface InputFieldProps {
   invitedUsers: UserInfo[];

@@ -12,7 +12,7 @@ import {
   VerticalSpacer,
 } from "./Components";
 import { Checkmark, CloseIcon, XIcon } from "./Symbols";
-import { Handler } from "./Utils";
+import { Handler } from "../utils/Utils";
 
 interface UserCardProps {
   name: string;

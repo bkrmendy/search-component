@@ -1,8 +1,8 @@
 import React from "react";
 import { Popup } from "./Popup";
 import { SuggestionCard } from "./SuggestionCard";
-import { UserInfo } from "./UserInfo";
-import { Handler } from "./Utils";
+import { UserInfo } from "../data/UserInfo";
+import { Handler } from "../utils/Utils";
 
 export interface SuggestionPopupProps {
   suggestions: UserInfo[];

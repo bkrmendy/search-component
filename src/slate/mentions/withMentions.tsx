@@ -1,8 +1,8 @@
 import { Transforms } from "slate";
 import { RenderElementProps, useFocused, useSelected } from "slate-react";
-import { MentionComponent } from "../Components";
+import { MentionComponent } from "../../ui/Components";
+import { UserInfo } from "../../data/UserInfo";
 import { CustomEditor, CustomElement } from "../slate-custom";
-import { UserInfo } from "../UserInfo";
 
 export const withMentions = (editor: CustomEditor): CustomEditor => {
   const { isInline, isVoid } = editor;

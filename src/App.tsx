@@ -7,11 +7,11 @@ import {
   Padding,
   RightSidebar,
   VerticalSpacer,
-} from "./Components";
-import { InputField } from "./InputField";
-import { UserCard } from "./UserCard";
-import { isUserAvailable, UserInfo } from "./UserInfo";
-import { noop, Observer } from "./Utils";
+} from "./ui/Components";
+import { InputField } from "./ui/InputField";
+import { UserCard } from "./ui/UserCard";
+import { isUserAvailable, UserInfo } from "./data/UserInfo";
+import { noop, Observer } from "./utils/Utils";
 
 import autoAnimate from "@formkit/auto-animate";
 

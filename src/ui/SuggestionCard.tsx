@@ -10,7 +10,7 @@ import {
   Label,
   VerticalSpacer,
 } from "./Components";
-import { Handler } from "./Utils";
+import { Handler } from "../utils/Utils";
 
 interface SuggestionCardProps {
   name: string;

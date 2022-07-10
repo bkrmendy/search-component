@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import styled, { keyframes } from "styled-components";
 
-import { Handler } from "./Utils";
-import { ZStack } from "./ZStack";
+import { Handler } from "../utils/Utils";
+import { ZStack } from "../ui/ZStack";
 
 const fadeIn = keyframes`
   from {
