@@ -4,9 +4,12 @@ import {
   FlexColumn,
   FlexRow,
   HorizontalSpacer,
+  LabelValue,
   Padding,
+  PlaceholderLabel,
   RightSidebar,
   VerticalSpacer,
+  Width,
 } from "./ui/Components";
 import { InputField } from "./ui/InputField";
 import { UserCard } from "./ui/UserCard";
@@ -56,25 +59,53 @@ function App() {
               onInvitedUserRemoved={removeInvitedUser}
             />
             <VerticalSpacer h={16} />
-            <FlexRow>
-              <CalendarLabel>Attendees</CalendarLabel>
-              <HorizontalSpacer w={50} />
-              <div ref={autoAnimateRef}>
-                {invitedUsers.map(user => (
-                  <UserCard
-                    key={user.id}
-                    name={user.name}
-                    avatar={user.avatar}
-                    available={isUserAvailable(user)}
-                    onRemove={() => {
-                      removeInvitedUser([user.id]);
-                      removeObserver.broadcast([user.id]);
-                    }}
-                    onClick={noop}
-                  />
-                ))}
-              </div>
-            </FlexRow>
+            <FlexColumn>
+              <FlexRow>
+                <Width w={"25%"}>
+                  <CalendarLabel>Attendees</CalendarLabel>
+                </Width>
+                <div ref={autoAnimateRef}>
+                  {invitedUsers.length === 0 ? (
+                    <PlaceholderLabel>Add guests by typing in the title bar</PlaceholderLabel>
+                  ) : (
+                    invitedUsers.map(user => (
+                      <UserCard
+                        key={user.id}
+                        name={user.name}
+                        avatar={user.avatar}
+                        available={isUserAvailable(user)}
+                        onRemove={() => {
+                          removeInvitedUser([user.id]);
+                          removeObserver.broadcast([user.id]);
+                        }}
+                        onClick={noop}
+                      />
+                    ))
+                  )}
+                </div>
+              </FlexRow>
+              <VerticalSpacer h={20} />
+              <FlexRow alignItems="baseline">
+                <Width w={"25%"}>
+                  <CalendarLabel>Duration</CalendarLabel>
+                </Width>
+                <LabelValue>30 min</LabelValue>
+              </FlexRow>
+              <VerticalSpacer h={20} />
+              <FlexRow alignItems="baseline">
+                <Width w={"25%"}>
+                  <CalendarLabel>When</CalendarLabel>
+                </Width>
+                <LabelValue>Tue, Jun 28</LabelValue>
+              </FlexRow>
+              <VerticalSpacer h={20} />
+              <FlexRow alignItems="baseline">
+                <Width w={"25%"}>
+                  <CalendarLabel>Availability</CalendarLabel>
+                </Width>
+                <LabelValue>Available</LabelValue>
+              </FlexRow>
+            </FlexColumn>
           </FlexColumn>
         </FlexRow>
       </Padding>

@@ -31,6 +31,18 @@ export const Label = styled.span`
   user-select: none;
 `;
 
+export const LabelValue = styled.span`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  user-select: none;
+`;
+
+export const PlaceholderLabel = styled(LabelValue)`
+  color: rgba(0, 0, 0, 0.25);
+`;
+
 export const Detail = styled.span`
   user-select: none;
   font-size: 11px;
@@ -94,11 +106,15 @@ export const AvatarImg = styled.img<{ loaded: boolean }>`
   height: 40px;
   width: 40px;
   object-fit: cover;
-  opacity: ${props => props.loaded ? 1 : 0};
+  opacity: ${props => (props.loaded ? 1 : 0)};
 `;
 
 export const Clickable = styled.div`
   cursor: pointer;
+`;
+
+export const Width = styled.div<{ w: string }>`
+  width: ${props => props.w};
 `;
 
 export const Padding = styled.div<{ p: number }>`
